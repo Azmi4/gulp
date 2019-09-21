@@ -12,8 +12,8 @@ const cleanCSS = require("gulp-clean-css");
 const sourcemaps = require("gulp-sourcemaps");
 const babel = require("gulp-babel");
 const uglify = require("gulp-uglify");
-// const svgo = require("gulp-svgo");
-// const svgSprite = require("gulp-svg-sprite");
+const svgo = require("gulp-svgo");
+const svgSprite = require("gulp-svg-sprite");
 const gulpif = require("gulp-if");
 
 const env = process.env.NODE_ENV;
@@ -43,7 +43,7 @@ task("styles", () => {
       gulpif(
         env === "dev",
         autoprefixer({
-          browsers: ["last 2 versions"],
+          overrideBrowserslist: ["last 2 versions"],
           cascade: false
         })
       )
@@ -70,30 +70,30 @@ task("scripts", () => {
     .pipe(reload({ stream: true }));
 });
 
-// task("icons", () => {
-//   return src("src/images/icons/*.svg")
-//     .pipe(
-//       svgo({
-//         plugins: [
-//           {
-//             removeAttrs: {
-//               attrs: "(fill|stroke|style|width|height|data.*)"
-//             }
-//           }
-//         ]
-//       })
-//     )
-//     .pipe(
-//       svgSprite({
-//         mode: {
-//           symbol: {
-//             sprite: "../sprite.svg"
-//           }
-//         }
-//       })
-//     )
-//     .pipe(dest("dist/images/icons"));
-// });
+task("icons", () => {
+  return src("src/images/icons/*.svg")
+    .pipe(
+      svgo({
+        plugins: [
+          {
+            removeAttrs: {
+              attrs: "(fill|stroke|style|width|height|data.*)"
+            }
+          }
+        ]
+      })
+    )
+    .pipe(
+      svgSprite({
+        mode: {
+          symbol: {
+            sprite: "../sprite.svg"
+          }
+        }
+      })
+    )
+    .pipe(dest("dist/images/icons"));
+});
 
 task("server", () => {
   browserSync.init({
